@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model JournalEntry {
+  id        String   @id @default(uuid())
+  title     String?
+  content   String   @default("")
+  /// 日記上の「日付」(YYYY-MM-DD)。時刻はUIで扱わないためDateTimeではなく文字列で保持する
+  date      String
+  /// 日記の登録時刻。作成時に自動で保存する（編集での更新とは別）
+  registeredAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
