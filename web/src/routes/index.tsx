@@ -1,28 +1,22 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { api } from '../lib/api' // Fixed import path
+import { useEffect, useState, useMemo } from 'react'
+import { api } from '../lib/api'
 import type { JournalEntry } from '../schemas/entry'
-import { Card } from '../components/ui/Card'
-import { Button } from '../components/ui/Button'
+import { Button } from '../components/Button'
 import { Plus } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
+import { parseEntryDate } from '../lib/dateUtils'
+import { YearMonthSidebar, type YearMonth } from '../components/YearMonthSidebar'
+import { EntryList } from '../components/EntryList'
 
 export const Route = createFileRoute('/')({
     component: Index,
 })
 
-function parseEntryDate(dateString: string): Date | null {
-    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateString)
-    if (!match) return null
-    const year = Number(match[1])
-    const month = Number(match[2])
-    const day = Number(match[3])
-    return new Date(year, month - 1, day)
-}
-
 function Index() {
     const [entries, setEntries] = useState<JournalEntry[]>([])
     const [loading, setLoading] = useState(true)
+    const [selectedYearMonth, setSelectedYearMonth] = useState<YearMonth | null>(null)
     const { show: showToast } = useToast()
 
     useEffect(() => {
@@ -30,7 +24,6 @@ function Index() {
     }, [])
 
     useEffect(() => {
-        // sessionStorageからトーストメッセージを取得
         const toastMessage = sessionStorage.getItem('toast_message')
         if (toastMessage) {
             sessionStorage.removeItem('toast_message')
@@ -49,57 +42,77 @@ function Index() {
         }
     }
 
-    return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">nomu</h1>
-                <Link to="/create">
-                    <Button className="rounded-full w-10 h-10 p-0 shadow-lg">
-                        <Plus className="w-6 h-6" />
-                    </Button>
-                </Link>
-            </div>
+    const yearMonthGroups = useMemo(() => {
+        const groups = new Map<string, YearMonth & { count: number }>()
+        entries.forEach((entry) => {
+            const date = parseEntryDate(entry.date)
+            if (date) {
+                const year = date.getFullYear()
+                const month = date.getMonth() + 1
+                const key = `${year}-${month}`
+                if (!groups.has(key)) {
+                    groups.set(key, { year, month, count: 0 })
+                }
+                groups.get(key)!.count++
+            }
+        })
+        return Array.from(groups.values()).sort((a, b) => {
+            if (a.year !== b.year) return b.year - a.year
+            return b.month - a.month
+        })
+    }, [entries])
 
-            {loading ? (
-                <div className="text-center py-10 text-gray-500">読み込み中...</div>
-            ) : entries.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
-                    <p className="text-lg text-gray-500">まだエントリーがありません。</p>
-                    <Link to="/create" className="mt-4 inline-block">
-                        <Button variant="ghost">書き始める</Button>
-                    </Link>
+    const filteredEntries = useMemo(() => {
+        if (!selectedYearMonth) return entries
+        return entries.filter((entry) => {
+            const date = parseEntryDate(entry.date)
+            if (!date) return false
+            return (
+                date.getFullYear() === selectedYearMonth.year &&
+                date.getMonth() + 1 === selectedYearMonth.month
+            )
+        })
+    }, [entries, selectedYearMonth])
+
+    const yearGroups = useMemo(() => {
+        const groups = new Map<number, (YearMonth & { count: number })[]>()
+        yearMonthGroups.forEach((ym) => {
+            if (!groups.has(ym.year)) {
+                groups.set(ym.year, [])
+            }
+            groups.get(ym.year)!.push(ym)
+        })
+        return Array.from(groups.entries()).sort((a, b) => b[0] - a[0])
+    }, [yearMonthGroups])
+
+    useEffect(() => {
+        if (yearMonthGroups.length > 0 && !selectedYearMonth) {
+            setSelectedYearMonth(yearMonthGroups[0])
+        }
+    }, [yearMonthGroups, selectedYearMonth])
+
+    return (
+        <div className="flex gap-6 h-[calc(100vh-4rem)]">
+            <YearMonthSidebar
+                yearGroups={yearGroups}
+                selectedYearMonth={selectedYearMonth}
+                onSelectYearMonth={setSelectedYearMonth}
+            />
+
+            <main className="flex-1 overflow-y-auto">
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-3xl font-bold tracking-tight">nomu</h1>
+                        <Link to="/create">
+                            <Button className="rounded-full w-10 h-10 p-0 shadow-lg">
+                                <Plus className="w-6 h-6" />
+                            </Button>
+                        </Link>
+                    </div>
+
+                    <EntryList entries={filteredEntries} loading={loading} />
                 </div>
-            ) : (
-                <div className="grid gap-4">
-                    {entries.map((entry) => (
-                        <Card
-                            key={entry.id}
-                            hover={false}
-                            className="border-transparent ring-inset hover:ring-1 hover:ring-black dark:hover:ring-white transition-colors"
-                        >
-                            <Link to="/$entryId" params={{ entryId: entry.id }} className="block no-underline">
-                                <div className="flex flex-col gap-2">
-                                    <div className="text-gray-500 dark:text-gray-400 text-sm">
-                                        {(parseEntryDate(entry.date) ?? new Date()).toLocaleDateString('ja-JP', {
-                                            year: 'numeric',
-                                            month: '2-digit',
-                                            day: '2-digit',
-                                        })}
-                                    </div>
-                                    {entry.title && (
-                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                            {entry.title}
-                                        </h3>
-                                    )}
-                                    <p className="text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed whitespace-pre-wrap">
-                                        {entry.content}
-                                    </p>
-                                </div>
-                            </Link>
-                        </Card>
-                    ))}
-                </div>
-            )}
+            </main>
         </div>
     )
 }

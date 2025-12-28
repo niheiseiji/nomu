@@ -6,9 +6,9 @@ import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 
 import { api } from '../lib/api'
 import { createEntrySchema, type CreateEntryInput, type JournalEntry } from '../schemas/entry'
-import { Button } from './ui/Button'
-import { Card } from './ui/Card'
-import { Input, Textarea } from './ui/Input'
+import { Button } from './Button'
+import { Card } from './Card'
+import { Input, Textarea } from './Input'
 
 function toLocalDateString(date: Date): string {
     const local = new Date(date)

@@ -1,5 +1,4 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
-// import { TanStackRouterDevtools } from '@tanstack/router-devtools' // Devtools removed
 import { ToastProvider } from '../context/ToastContext'
 
 function RootComponent() {
