@@ -1,8 +1,8 @@
-import { type ButtonHTMLAttributes, forwardRef } from 'react';
-import { cn } from './Card';
+import { type ButtonHTMLAttributes, forwardRef } from 'react'
+import { cn } from '../lib/utils'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'ghost' | 'danger';
+    variant?: 'primary' | 'ghost' | 'danger'
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -19,7 +19,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 )}
                 {...props}
             />
-        );
+        )
     }
-);
-Button.displayName = "Button";
+)
+Button.displayName = "Button"
+

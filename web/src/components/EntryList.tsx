@@ -9,7 +9,7 @@ interface EntryListProps {
     loading: boolean
 }
 
-export function EntryList({ entries, loading }: EntryListProps) {
+export const EntryList = ({ entries, loading }: EntryListProps) => {
     if (loading) {
         return <div className="text-center py-10 text-gray-500">読み込み中...</div>
     }

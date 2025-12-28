@@ -1,5 +1,5 @@
-import { type InputHTMLAttributes, type TextareaHTMLAttributes, forwardRef } from 'react';
-import { cn } from './Card';
+import { type InputHTMLAttributes, type TextareaHTMLAttributes, forwardRef } from 'react'
+import { cn } from '../lib/utils'
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
     ({ className, ...props }, ref) => {
@@ -12,10 +12,10 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
                 )}
                 {...props}
             />
-        );
+        )
     }
-);
-Input.displayName = "Input";
+)
+Input.displayName = "Input"
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(
     ({ className, ...props }, ref) => {
@@ -28,7 +28,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
                 )}
                 {...props}
             />
-        );
+        )
     }
-);
-Textarea.displayName = "Textarea";
+)
+Textarea.displayName = "Textarea"
+

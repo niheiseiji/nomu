@@ -9,14 +9,15 @@ import { createEntrySchema, type CreateEntryInput, type JournalEntry } from '../
 import { Button } from './Button'
 import { Card } from './Card'
 import { Input, Textarea } from './Input'
+import { setToastMessage } from '../hooks/useToastMessage'
 
-function toLocalDateString(date: Date): string {
+const toLocalDateString = (date: Date): string => {
     const local = new Date(date)
     local.setMinutes(local.getMinutes() - local.getTimezoneOffset())
     return local.toISOString().slice(0, 10)
 }
 
-function normalizeEntryDate(value: string): string {
+const normalizeEntryDate = (value: string): string => {
     if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value
     if (value.includes('T')) {
         const datePart = value.split('T')[0]
@@ -29,7 +30,7 @@ type Props = {
     entryId?: string
 }
 
-export function EntryEditor(props: Props) {
+export const EntryEditor = (props: Props) => {
     const navigate = useNavigate()
     const isEdit = Boolean(props.entryId)
 
@@ -106,7 +107,7 @@ export function EntryEditor(props: Props) {
                 await api.post('/entries', data)
             }
             reset(data)
-            sessionStorage.setItem('toast_message', '保存しました')
+            setToastMessage('保存しました')
             navigate({ to: '/' })
         } catch {
             alert('保存に失敗しました')

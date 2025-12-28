@@ -1,13 +1,8 @@
-import { type HTMLAttributes, forwardRef } from 'react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+import { type HTMLAttributes, forwardRef } from 'react'
+import { cn } from '../lib/utils'
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-    hover?: boolean;
+    hover?: boolean
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
@@ -22,7 +17,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
                 )}
                 {...props}
             />
-        );
+        )
     }
-);
-Card.displayName = "Card";
+)
+Card.displayName = "Card"
+
