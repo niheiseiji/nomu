@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { Button } from '../components/Button'
-import { Plus } from 'lucide-react'
+import { createFileRoute } from '@tanstack/react-router'
 import { YearMonthSidebar } from '../components/YearMonthSidebar'
 import { EntryList } from '../components/EntryList'
 import { ContributionBox } from '../components/ContributionBox'
+import { AppTitle } from '../components/AppTitle'
+import { CreateButton } from '../components/CreateButton'
 import { useEntries, useYearMonthFilter } from '../hooks/useEntries'
 import { useToastMessage } from '../hooks/useToastMessage'
 
@@ -13,33 +13,27 @@ const Index = () => {
     useToastMessage()
 
     return (
-        <div className="min-h-screen py-6 w-full">
-            <div className="w-full max-w-7xl mx-auto px-4">
-                <div className="flex gap-6">
-                    <main className="flex-1 min-w-0">
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <h1 className="text-3xl font-bold tracking-tight">nomu</h1>
-                                <Link to="/create">
-                                    <Button className="rounded-full w-10 h-10 p-0 shadow-lg bg-black">
-                                        <Plus className="w-6 h-6" />
-                                    </Button>
-                                </Link>
-                            </div>
-
-                            {!loading && entries.length > 0 && <ContributionBox entries={entries} />}
-
-                            <EntryList entries={filteredEntries} loading={loading} />
-                        </div>
-                    </main>
-
-                    <YearMonthSidebar
-                        yearGroups={yearGroups}
-                        selectedYearMonth={selectedYearMonth}
-                        onSelectYearMonth={setSelectedYearMonth}
-                    />
+        <div className="flex max-w-7xl w-full gap-6">
+            {/* 左サイド */}
+            <div className="flex-1 min-w-0">
+                <div className="flex justify-between">
+                    <AppTitle />
+                    <CreateButton />
                 </div>
+                {!loading && entries.length > 0 && (
+                    <div>
+                        <ContributionBox entries={entries} />
+                    </div>
+                )}
+                <EntryList entries={filteredEntries} loading={loading} />
             </div>
+            {/* 右サイド */}
+            <div className="flex-shrink-0">
+                <YearMonthSidebar
+                    yearGroups={yearGroups}
+                    selectedYearMonth={selectedYearMonth}
+                    onSelectYearMonth={setSelectedYearMonth}
+                /></div>
         </div>
     )
 }
