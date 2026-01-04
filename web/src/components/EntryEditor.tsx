@@ -176,7 +176,7 @@ export const EntryEditor = (props: Props) => {
                         <Button
                             type="submit"
                             disabled={isSubmitting || (isEdit && !isDirty)}
-                            className="w-full sm:w-auto"
+                            className="w-full sm:w-auto bg-black"
                         >
                             {isSubmitting ? '保存中...' : (
                                 <>

@@ -18,7 +18,7 @@ export const EntryList = ({ entries, loading }: EntryListProps) => {
         return (
             <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
                 <p className="text-lg text-gray-500">まだエントリーがありません。</p>
-                <Link to="/create" className="mt-4 inline-block">
+                <Link to="/create" className="mt-4 inline-block bg-blue">
                     <Button variant="ghost">書き始める</Button>
                 </Link>
             </div>

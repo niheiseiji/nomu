@@ -43,9 +43,16 @@ export const groupYearMonthsByYear = (yearMonthGroups: YearMonthGroup[]): [numbe
 
 export const filterEntriesByYearMonth = (entries: JournalEntry[], yearMonth: YearMonth | null): JournalEntry[] => {
     if (!yearMonth) return entries
+    
     return entries.filter((entry) => {
         const date = parseEntryDate(entry.date)
         if (!date) return false
+        
+        // monthが0の場合は年全体を表示
+        if (yearMonth.month === 0) {
+            return date.getFullYear() === yearMonth.year
+        }
+        
         return (
             date.getFullYear() === yearMonth.year &&
             date.getMonth() + 1 === yearMonth.month
