@@ -131,19 +131,19 @@ export const EntryEditor = (props: Props) => {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <Button variant="ghost" onClick={handleBack}>
+                <Button variant="ghost" onClick={handleBack} className="cursor-pointer">
                     <ArrowLeft className="w-5 h-5 mr-1" />
                     戻る
                 </Button>
                 {isEdit && (
-                    <Button variant="danger" onClick={handleDelete}>
+                    <Button variant="danger" onClick={handleDelete} className="cursor-pointer">
                         <Trash2 className="w-4 h-4 mr-2" />
                         削除
                     </Button>
                 )}
             </div>
 
-            <Card className={isEdit ? 'min-h-[50vh]' : undefined}>
+            <div className={isEdit ? 'min-h-[50vh]' : undefined}>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-2">
                         <Input type="date" {...register('date')} />
@@ -155,8 +155,8 @@ export const EntryEditor = (props: Props) => {
                     <div className="space-y-2">
                         <Input
                             placeholder="タイトル (任意)"
-                            className="text-lg font-semibold border-none px-0 shadow-none focus-visible:ring-0 bg-transparent placeholder:text-gray-400"
-                            autoFocus={!isEdit}
+                            className="text-lg font-semibold border-none px-0 shadow-none bg-transparent placeholder:text-gray-400"
+                            autoFocus
                             {...register('title')}
                         />
                     </div>
@@ -164,7 +164,7 @@ export const EntryEditor = (props: Props) => {
                     <div className="space-y-2">
                         <Textarea
                             placeholder={isEdit ? '内容を入力...' : '今、何を考えていますか？'}
-                            className="min-h-[300px] border-none px-0 shadow-none focus-visible:ring-0 bg-transparent resize-none text-base leading-relaxed"
+                            className="min-h-[300px] border-none px-0 shadow-none bg-transparent resize-none text-base leading-relaxed"
                             {...register('content')}
                         />
                         {errors.content && (
@@ -176,7 +176,7 @@ export const EntryEditor = (props: Props) => {
                         <Button
                             type="submit"
                             disabled={isSubmitting || (isEdit && !isDirty)}
-                            className="w-full sm:w-auto bg-black"
+                            className="w-full sm:w-auto bg-black cursor-pointer"
                         >
                             {isSubmitting ? '保存中...' : (
                                 <>
@@ -187,7 +187,7 @@ export const EntryEditor = (props: Props) => {
                         </Button>
                     </div>
                 </form>
-            </Card>
+            </div>
         </div>
     )
 }
