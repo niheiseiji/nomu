@@ -21,7 +21,7 @@ const Index = () => {
                     <CreateButton />
                 </div>
                 {!loading && entries.length > 0 && (
-                    <div>
+                    <div className="my-4">
                         <ContributionBox entries={entries} />
                     </div>
                 )}

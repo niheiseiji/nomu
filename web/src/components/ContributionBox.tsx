@@ -70,8 +70,8 @@ const TooltipCell = ({ formattedDate, hasEntry }: TooltipCellProps) => {
                 onMouseLeave={handleMouseLeave}
             >
                 <div
-                    className={`w-[10px] h-[10px] rounded-sm border border-black dark:border-white cursor-pointer ${
-                        hasEntry ? 'bg-black' : 'bg-gray-200 dark:bg-gray-800'
+                    className={`w-[10px] h-[10px] rounded-sm border border-black dark:border-white ${
+                        hasEntry ? 'bg-black' : 'bg-white'
                     }`}
                 />
             </div>
@@ -203,7 +203,7 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
 
     return (
         <div className="bg-white dark:bg-zinc-900 rounded-md max-w-[750px]">
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-lg font-semibold mb-1">
                 {currentYear}年の記録
             </h3>
             <div className="overflow-x-auto overflow-y-hidden max-w-[750px]">
@@ -252,7 +252,7 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
                                         return (
                                             <div
                                                 key={`${weekIndex}-${dayIndex}`}
-                                                className="w-[10px] h-[10px] rounded-sm border border-black dark:border-white bg-transparent"
+                                                className="w-[10px] h-[10px] rounded-sm border border-gray-300 dark:border-gray-600 bg-gray-200 dark:bg-gray-800"
                                             />
                                         )
                                     }

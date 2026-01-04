@@ -26,33 +26,35 @@ export const EntryList = ({ entries, loading }: EntryListProps) => {
     }
 
     return (
-        <div className="grid gap-4">
+        <div className="grid">
             {entries.map((entry) => (
-                <Card
-                    key={entry.id}
-                    hover={false}
-                    className="border-transparent ring-inset hover:ring-1 hover:ring-black dark:hover:ring-white transition-colors"
-                >
-                    <Link to="/$entryId" params={{ entryId: entry.id }} className="block no-underline">
-                        <div className="flex flex-col gap-2">
-                            <div className="text-gray-500 dark:text-gray-400 text-sm">
-                                {(parseEntryDate(entry.date) ?? new Date()).toLocaleDateString('ja-JP', {
-                                    year: 'numeric',
-                                    month: '2-digit',
-                                    day: '2-digit',
-                                })}
+                <>
+                    <hr className="border-gray-200 dark:border-gray-800"/>
+                    <Card
+                        key={entry.id}
+                        hover={false}
+                        className="py-2 border-transparent ring-inset hover:ring-1 hover:ring-black dark:hover:ring-white transition-colors"
+                    >
+                        <Link to="/$entryId" params={{ entryId: entry.id }} className="block no-underline">
+                            <div className="flex flex-col">
+                                <div className="text-gray-500 dark:text-gray-400 text-sm">
+                                    {(parseEntryDate(entry.date) ?? new Date()).toLocaleDateString('ja-JP', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
+                                    })}
+                                </div>
+                                {entry.title && (
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                        {entry.title}
+                                    </h3>
+                                )}
+                                <p className="text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed whitespace-pre-wrap">
+                                    {entry.content}
+                                </p>
                             </div>
-                            {entry.title && (
-                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                    {entry.title}
-                                </h3>
-                            )}
-                            <p className="text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed whitespace-pre-wrap">
-                                {entry.content}
-                            </p>
-                        </div>
-                    </Link>
-                </Card>
+                        </Link>
+                    </Card></>
             ))}
         </div>
     )

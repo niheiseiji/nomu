@@ -23,9 +23,9 @@ export const YearMonthSidebar = ({ yearGroups, selectedYearMonth, onSelectYearMo
                 className="md:hidden fixed top-6 right-4 z-50 p-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg"
             >
                 {isOpen ? (
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-5 h-5 cursor-pointer" />
                 ) : (
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-5 h-5 cursor-pointer" />
                 )}
             </button>
 
@@ -48,7 +48,7 @@ export const YearMonthSidebar = ({ yearGroups, selectedYearMonth, onSelectYearMo
                                             onSelectYearMonth({ year, month: 0 })
                                             setIsOpen(false)
                                         }}
-                                        className={`w-full text-left text-sm font-medium px-2 py-1 rounded transition-colors ${
+                                        className={`w-full text-left text-sm font-medium px-2 py-1 rounded transition-colors cursor-pointer ${
                                             selectedYearMonth?.year === year && selectedYearMonth?.month === 0
                                                 ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
                                                 : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
@@ -63,7 +63,7 @@ export const YearMonthSidebar = ({ yearGroups, selectedYearMonth, onSelectYearMo
                                                 onSelectYearMonth(ym)
                                                 setIsOpen(false)
                                             }}
-                                            className={`w-full text-left px-2 py-1 rounded text-sm transition-colors ${
+                                            className={`w-full text-left px-2 py-1 rounded text-sm transition-colors cursor-pointer ${
                                                 selectedYearMonth?.year === ym.year &&
                                                 selectedYearMonth?.month === ym.month
                                                     ? 'bg-gray-200 dark:bg-gray-700 font-medium'
