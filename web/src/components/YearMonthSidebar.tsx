@@ -20,7 +20,7 @@ export const YearMonthSidebar = ({ yearGroups, selectedYearMonth, onSelectYearMo
             {/* スマホ版: 折りたたみボタン */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden fixed top-6 right-4 z-50 p-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg"
+                className="md:hidden fixed top-6 right-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-lg"
             >
                 {isOpen ? (
                     <ChevronRight className="w-5 h-5 cursor-pointer" />
@@ -31,10 +31,10 @@ export const YearMonthSidebar = ({ yearGroups, selectedYearMonth, onSelectYearMo
 
             {/* サイドバー */}
             <aside
-                className={`w-64 md:w-32 flex-shrink-0 border-l border-gray-200 dark:border-gray-800 pl-6 transition-transform duration-300 ${
+                className={`w-64 md:w-32 flex-shrink-0 border-l border-gray-200 pl-6 transition-transform duration-300 ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 } md:translate-x-0 ${
-                    isOpen ? 'fixed md:relative inset-y-0 right-0 bg-white dark:bg-zinc-900 z-40 p-6' : 'md:relative'
+                    isOpen ? 'fixed md:relative inset-y-0 right-0 bg-white z-40 p-6' : 'md:relative'
                 }`}
             >
                 <div className="sticky top-6">
@@ -50,8 +50,8 @@ export const YearMonthSidebar = ({ yearGroups, selectedYearMonth, onSelectYearMo
                                         }}
                                         className={`w-full text-left text-sm font-medium px-2 py-1 rounded transition-colors cursor-pointer ${
                                             selectedYearMonth?.year === year && selectedYearMonth?.month === 0
-                                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                                ? 'bg-gray-200 text-gray-900'
+                                                : 'text-gray-700 hover:bg-gray-100'
                                         }`}
                                     >
                                         {year}年 ({yearTotalCount})
@@ -66,8 +66,8 @@ export const YearMonthSidebar = ({ yearGroups, selectedYearMonth, onSelectYearMo
                                             className={`w-full text-left px-2 py-1 rounded text-sm transition-colors cursor-pointer ${
                                                 selectedYearMonth?.year === ym.year &&
                                                 selectedYearMonth?.month === ym.month
-                                                    ? 'bg-gray-200 dark:bg-gray-700 font-medium'
-                                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                                    ? 'bg-gray-200 font-medium'
+                                                    : 'text-gray-600 hover:bg-gray-100'
                                             }`}
                                         >
                                             {ym.month}月({ym.count})

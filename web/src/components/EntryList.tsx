@@ -16,7 +16,7 @@ export const EntryList = ({ entries, loading }: EntryListProps) => {
 
     if (entries.length === 0) {
         return (
-            <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+            <div className="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
                 <p className="text-lg text-gray-500">まだエントリーがありません。</p>
                 <Link to="/create" className="mt-4 inline-block bg-blue">
                     <Button variant="ghost">書き始める</Button>
@@ -29,15 +29,15 @@ export const EntryList = ({ entries, loading }: EntryListProps) => {
         <div className="grid">
             {entries.map((entry) => (
                 <>
-                    <hr className="border-gray-200 dark:border-gray-800"/>
+                    <hr className="border-gray-200"/>
                     <Card
                         key={entry.id}
                         hover={false}
-                        className="py-2 border-transparent ring-inset hover:ring-1 hover:ring-black dark:hover:ring-white transition-colors"
+                        className="py-2 border-transparent ring-inset hover:ring-1 hover:ring-black transition-colors"
                     >
                         <Link to="/$entryId" params={{ entryId: entry.id }} className="block no-underline">
                             <div className="flex flex-col">
-                                <div className="text-gray-500 dark:text-gray-400 text-sm">
+                                <div className="text-gray-500 text-sm">
                                     {(parseEntryDate(entry.date) ?? new Date()).toLocaleDateString('ja-JP', {
                                         year: 'numeric',
                                         month: '2-digit',
@@ -45,11 +45,11 @@ export const EntryList = ({ entries, loading }: EntryListProps) => {
                                     })}
                                 </div>
                                 {entry.title && (
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                    <h3 className="text-lg font-semibold text-gray-900">
                                         {entry.title}
                                     </h3>
                                 )}
-                                <p className="text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed whitespace-pre-wrap">
+                                <p className="text-gray-700 line-clamp-3 leading-relaxed whitespace-pre-wrap">
                                     {entry.content}
                                 </p>
                             </div>

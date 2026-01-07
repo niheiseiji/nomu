@@ -7,7 +7,6 @@ import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 import { api } from '../lib/api'
 import { createEntrySchema, type CreateEntryInput, type JournalEntry } from '../schemas/entry'
 import { Button } from './Button'
-import { Card } from './Card'
 import { Input, Textarea } from './Input'
 import { setToastMessage } from '../hooks/useToastMessage'
 
@@ -125,8 +124,8 @@ export const EntryEditor = (props: Props) => {
         }
     }
 
-    if (loading) return <div className="text-center py-10">読み込み中...</div>
-    if (isEdit && !entry) return <div className="text-center py-10">エントリーが見つかりません</div>
+    if (loading) return <div className="text-center py-10 text-gray-500">読み込み中...</div>
+    if (isEdit && !entry) return <div className="text-center py-10 text-gray-500">エントリーが見つかりません</div>
 
     return (
         <div className="space-y-6">
@@ -164,7 +163,7 @@ export const EntryEditor = (props: Props) => {
                     <div className="space-y-2">
                         <Textarea
                             placeholder={isEdit ? '内容を入力...' : '今、何を考えていますか？'}
-                            className="min-h-[300px] border-none px-0 shadow-none bg-transparent resize-none text-base leading-relaxed"
+                            className="min-h-[300px] border-none px-0 shadow-none bg-transparent resize-none text-base leading-relaxed placeholder:text-gray-400"
                             {...register('content')}
                         />
                         {errors.content && (
@@ -172,11 +171,11 @@ export const EntryEditor = (props: Props) => {
                         )}
                     </div>
 
-                    <div className="flex justify-end pt-4 border-t border-gray-100 dark:border-gray-800">
+                    <div className="flex justify-end pt-4 border-t border-gray-100">
                         <Button
                             type="submit"
                             disabled={isSubmitting || (isEdit && !isDirty)}
-                            className="w-full sm:w-auto bg-black cursor-pointer"
+                            className="w-full sm:w-auto bg-black text-white cursor-pointer"
                         >
                             {isSubmitting ? '保存中...' : (
                                 <>

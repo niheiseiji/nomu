@@ -70,7 +70,7 @@ const TooltipCell = ({ formattedDate, hasEntry }: TooltipCellProps) => {
                 onMouseLeave={handleMouseLeave}
             >
                 <div
-                    className={`w-[10px] h-[10px] rounded-sm border border-black dark:border-white ${
+                    className={`w-[10px] h-[10px] rounded-sm border border-black ${
                         hasEntry ? 'bg-black' : 'bg-white'
                     }`}
                 />
@@ -202,7 +202,7 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
     const currentYear = new Date().getFullYear()
 
     return (
-        <div className="bg-white dark:bg-zinc-900 rounded-md max-w-[750px]">
+        <div className="bg-ios-bg-light rounded-md max-w-[750px]">
             <h3 className="text-lg font-semibold mb-1">
                 {currentYear}年の記録
             </h3>
@@ -215,7 +215,7 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
                             return (
                                 <div key={weekIndex} className="flex flex-col" style={{ width: '13px' }}>
                                     {monthLabel && (
-                                        <div className="text-xs text-gray-600 dark:text-gray-400 h-[10px] flex items-center">
+                                        <div className="text-xs text-gray-600 h-[10px] flex items-center">
                                             {monthLabel.month}
                                         </div>
                                     )}
@@ -235,7 +235,7 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
                                 return (
                                     <div key={dayIndex} className="flex items-center h-[10px]">
                                         {label && (
-                                            <span className="text-xs text-gray-600 dark:text-gray-400 pr-1">
+                                            <span className="text-xs text-gray-600 pr-1">
                                                 {label}
                                             </span>
                                         )}
@@ -252,7 +252,7 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
                                         return (
                                             <div
                                                 key={`${weekIndex}-${dayIndex}`}
-                                                className="w-[10px] h-[10px] rounded-sm border border-gray-300 dark:border-gray-600 bg-gray-200 dark:bg-gray-800"
+                                                className="w-[10px] h-[10px] rounded-sm border border-gray-300 bg-gray-200"
                                             />
                                         )
                                     }
