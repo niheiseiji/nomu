@@ -10,3 +10,8 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 .idea
+node_modules
+
+# pnpm
+.pnpm-store
+.pnpm-debug.log

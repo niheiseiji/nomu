@@ -1,0 +1,22 @@
+{
+  "name": "nomu",
+  "version": "1.0.0",
+  "description": "日記アプリケーション",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter backend dev & pnpm --filter web dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:web": "pnpm --filter web dev",
+    "build": "pnpm --recursive build",
+    "build:backend": "pnpm --filter backend build",
+    "build:web": "pnpm --filter web build",
+    "prisma:migrate": "pnpm --filter backend exec prisma migrate dev",
+    "prisma:seed": "pnpm --filter backend exec prisma db seed"
+  },
+  "keywords": [
+    "diary",
+    "journal"
+  ],
+  "author": "",
+  "license": "ISC"
+}

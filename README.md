@@ -24,18 +24,43 @@
 
 ## セットアップ
 
-### Backend
+このプロジェクトは pnpm workspaces を使用したモノレポです。
+
+### 初期セットアップ
 ```bash
-cd backend
-npm install
-npx prisma migrate dev
-npm run dev
+# ルートディレクトリで依存関係をインストール
+pnpm install
+
+# Prismaのマイグレーション
+pnpm prisma:migrate
+
+# (オプション) サンプルデータをシード
+pnpm prisma:seed
 ```
 
-### Web
+### 開発サーバーの起動
+
 ```bash
-cd web
-npm install
-npm run dev
+# Backend と Web を同時に起動
+pnpm dev
+
+# Backend のみ起動
+pnpm dev:backend
+
+# Web のみ起動
+pnpm dev:web
+```
+
+### ビルド
+
+```bash
+# 全てのワークスペースをビルド
+pnpm build
+
+# Backend のみビルド
+pnpm build:backend
+
+# Web のみビルド
+pnpm build:web
 ```
 
