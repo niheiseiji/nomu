@@ -20,7 +20,7 @@ const Index = () => {
     useToastMessage()
 
     return (
-        <div className="flex max-w-7xl w-full">
+        <div className="flex max-w-7xl w-full px-1 pt-1">
             {/* 左サイド */}
             <div className="flex-1 min-w-0">
                 <div className="flex justify-between mt-1">
