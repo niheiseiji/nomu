@@ -6,6 +6,8 @@ import { AppTitle } from '../components/AppTitle'
 import { CreateButton } from '../components/CreateButton'
 import { useEntries, useYearMonthFilter } from '../hooks/useEntries'
 import { useToastMessage } from '../hooks/useToastMessage'
+import { GardenButton } from '../components/GardenButton'
+import { UserIcon } from '../components/UserIcon'
 
 const Index = () => {
     const { entries, loading } = useEntries()
@@ -18,7 +20,11 @@ const Index = () => {
             <div className="flex-1 min-w-0">
                 <div className="flex justify-between">
                     <AppTitle />
-                    <CreateButton />
+                    <div className="flex gap-2 items-center">
+                        <GardenButton />
+                        <CreateButton />
+                        <UserIcon />
+                    </div>
                 </div>
                 {!loading && entries.length > 0 && (
                     <div className="my-4">

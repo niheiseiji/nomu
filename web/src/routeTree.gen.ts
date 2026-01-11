@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as GardenRouteImport } from './routes/garden'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as EntryIdRouteImport } from './routes/$entryId'
 import { Route as IndexRouteImport } from './routes/index'
 
+const GardenRoute = GardenRouteImport.update({
+  id: '/garden',
+  path: '/garden',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreateRoute = CreateRouteImport.update({
   id: '/create',
   path: '/create',
@@ -33,34 +39,45 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$entryId': typeof EntryIdRoute
   '/create': typeof CreateRoute
+  '/garden': typeof GardenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$entryId': typeof EntryIdRoute
   '/create': typeof CreateRoute
+  '/garden': typeof GardenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$entryId': typeof EntryIdRoute
   '/create': typeof CreateRoute
+  '/garden': typeof GardenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$entryId' | '/create'
+  fullPaths: '/' | '/$entryId' | '/create' | '/garden'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$entryId' | '/create'
-  id: '__root__' | '/' | '/$entryId' | '/create'
+  to: '/' | '/$entryId' | '/create' | '/garden'
+  id: '__root__' | '/' | '/$entryId' | '/create' | '/garden'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EntryIdRoute: typeof EntryIdRoute
   CreateRoute: typeof CreateRoute
+  GardenRoute: typeof GardenRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/garden': {
+      id: '/garden'
+      path: '/garden'
+      fullPath: '/garden'
+      preLoaderRoute: typeof GardenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/create': {
       id: '/create'
       path: '/create'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EntryIdRoute: EntryIdRoute,
   CreateRoute: CreateRoute,
+  GardenRoute: GardenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
