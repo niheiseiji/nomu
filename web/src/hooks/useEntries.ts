@@ -41,10 +41,11 @@ export const useYearMonthFilter = (entries: JournalEntry[]) => {
     )
 
     useEffect(() => {
-        if (yearMonthGroups.length > 0 && !selectedYearMonth) {
-            setSelectedYearMonth(yearMonthGroups[0])
+        if (!selectedYearMonth) {
+            const currentYear = new Date().getFullYear()
+            setSelectedYearMonth({ year: currentYear, month: 0 })
         }
-    }, [yearMonthGroups, selectedYearMonth])
+    }, [selectedYearMonth])
 
     return {
         selectedYearMonth,

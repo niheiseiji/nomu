@@ -213,12 +213,12 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
     const currentYear = new Date().getFullYear()
 
     return (
-        <div className="bg-ios-bg-light rounded-md max-w-[750px] p-1">
-            <h3 className="text-lg font-semibold mb-1">
+        <div className="bg-ios-bg-light rounded-md max-w-[750px]">
+            <h3 className="text-sm font-semibold mt-2">
                 {currentYear}年の記録
             </h3>
             <div className="overflow-x-auto max-w-[750px]" style={{ overflowY: 'visible' }}>
-                <div className="relative pt-[18px] pb-2">
+                <div className="relative pt-[12px] pb-2">
                     {/* カレンダーグリッド */}
                     <div className="inline-flex gap-[3px] min-w-[600px] max-w-[600px]">
                         {/* 曜日ラベル列 */}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useRouter } from '@tanstack/react-router'
 import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 
 import { api } from '../lib/api'
@@ -31,6 +31,7 @@ type Props = {
 
 export const EntryEditor = (props: Props) => {
     const navigate = useNavigate()
+    const router = useRouter()
     const isEdit = Boolean(props.entryId)
 
     const [loading, setLoading] = useState(isEdit)
@@ -107,6 +108,7 @@ export const EntryEditor = (props: Props) => {
             }
             reset(data)
             setToastMessage('保存しました')
+            router.invalidate()
             navigate({ to: '/' })
         } catch {
             alert('保存に失敗しました')
@@ -118,6 +120,7 @@ export const EntryEditor = (props: Props) => {
         if (!confirm('本当にこのエントリーを削除しますか？')) return
         try {
             await api.delete(`/entries/${props.entryId}`)
+            router.invalidate()
             navigate({ to: '/' })
         } catch {
             alert('削除に失敗しました')

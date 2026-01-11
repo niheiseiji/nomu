@@ -35,7 +35,7 @@ export const EntryList = ({ entries, loading }: EntryListProps) => {
                         hover={false}
                         className="py-2 border-transparent ring-inset hover:ring-1 hover:ring-black transition-colors"
                     >
-                        <Link to="/$entryId" params={{ entryId: entry.id }} className="block no-underline">
+                        <Link to="/$entryId" params={{ entryId: entry.id }} preload="intent" className="block no-underline">
                             <div className="flex flex-col">
                                 <div className="text-gray-500 text-sm">
                                     {(parseEntryDate(entry.date) ?? new Date()).toLocaleDateString('ja-JP', {

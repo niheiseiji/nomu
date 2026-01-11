@@ -6,13 +6,15 @@ import { EntryList } from '../components/EntryList'
 import { ContributionBox } from '../components/ContributionBox'
 import { AppTitle } from '../components/AppTitle'
 import { CreateButton } from '../components/CreateButton'
-import { useEntries, useYearMonthFilter } from '../hooks/useEntries'
+import { useYearMonthFilter } from '../hooks/useEntries'
 import { useToastMessage } from '../hooks/useToastMessage'
 import { GardenButton } from '../components/GardenButton'
 import { UserIcon } from '../components/UserIcon'
+import { api } from '../lib/api'
+import type { JournalEntry } from '../schemas/entry'
 
 const Index = () => {
-    const { entries, loading } = useEntries()
+    const { entries } = Route.useLoaderData()
     const { selectedYearMonth, setSelectedYearMonth, yearGroups, filteredEntries } = useYearMonthFilter(entries)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     useToastMessage()
@@ -23,7 +25,7 @@ const Index = () => {
             <div className="flex-1 min-w-0">
                 <div className="flex justify-between mt-1">
                     <AppTitle />
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-2 items-center mr-2">
                         <div className="hidden md:flex gap-2 items-center">
                             <GardenButton />
                             <CreateButton />
@@ -43,12 +45,12 @@ const Index = () => {
                     <GardenButton />
                     <CreateButton />
                 </div>
-                {!loading && entries.length > 0 && (
+                {entries.length > 0 && (
                     <div className="mb-2">
                         <ContributionBox entries={entries} />
                     </div>
                 )}
-                <EntryList entries={filteredEntries} loading={loading} />
+                <EntryList entries={filteredEntries} loading={false} />
             </div>
             {/* 右サイド */}
             <div className="hidden md:block flex-shrink-0">
@@ -74,4 +76,10 @@ const Index = () => {
 
 export const Route = createFileRoute('/')({
     component: Index,
+    loader: async (): Promise<{ entries: JournalEntry[] }> => {
+        const res = await api.get<JournalEntry[]>('/entries')
+        return { entries: res.data }
+    },
+    gcTime: 5 * 60 * 1000,
+    staleTime: 30 * 1000,
 })
