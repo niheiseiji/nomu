@@ -1,0 +1,32 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:/app/backend/data/db.sqlite
+      - PORT=3000
+      - NODE_ENV=development
+    volumes:
+      - ./backend/data:/app/backend/data
+      - ./backend/prisma:/app/backend/prisma
+    working_dir: /app/backend
+    command: sh -c "cd /app/backend && npx prisma migrate deploy && node dist/index.js"
+    restart: unless-stopped
+
+  web-dev:
+    build:
+      context: .
+      dockerfile: web/Dockerfile.dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_PROXY_TARGET=http://backend:3000
+    volumes:
+      - ./web:/app/web
+      - /app/web/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped

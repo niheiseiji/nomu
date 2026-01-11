@@ -1,20 +1,20 @@
 import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
+import { Hono, Context } from 'hono';
+import { cors } from 'hono/cors';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { z } from 'zod';
 import { createEntrySchema, updateEntrySchema } from './schemas/entry';
-
-const app = express();
+import { serve } from '@hono/node-server';
 
 const adapter = new PrismaBetterSqlite3({
     url: process.env.DATABASE_URL!.replace('file:', ''),
 });
 const prisma = new PrismaClient({ adapter });
 
-app.use(cors());
-app.use(express.json());
+const app = new Hono();
+
+app.use('/*', cors());
 
 function toLocalDateString(date: Date): string {
     const local = new Date(date);
@@ -22,25 +22,26 @@ function toLocalDateString(date: Date): string {
     return local.toISOString().slice(0, 10);
 }
 
-// Routes
-const router = express.Router();
+// API routes
+const api = new Hono();
 
 // List entries
-router.get('/entries', async (req, res) => {
+api.get('/entries', async (c: Context) => {
     try {
         const entries = await prisma.journalEntry.findMany({
             orderBy: { date: 'desc' },
         });
-        res.json(entries);
+        return c.json(entries);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch entries' });
+        return c.json({ error: 'Failed to fetch entries' }, 500);
     }
 });
 
 // Create entry
-router.post('/entries', async (req, res) => {
+api.post('/entries', async (c: Context) => {
     try {
-        const validatedData = createEntrySchema.parse(req.body);
+        const body = await c.req.json();
+        const validatedData = createEntrySchema.parse(body);
         const entryDate = validatedData.date ?? toLocalDateString(new Date());
         const entry = await prisma.journalEntry.create({
             data: {
@@ -50,37 +51,37 @@ router.post('/entries', async (req, res) => {
                 registeredAt: new Date(),
             },
         });
-        res.status(201).json(entry);
+        return c.json(entry, 201);
     } catch (error) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ errors: error.issues });
-        } else {
-            res.status(500).json({ error: 'Failed to create entry' });
+            return c.json({ errors: error.issues }, 400);
         }
+        return c.json({ error: 'Failed to create entry' }, 500);
     }
 });
 
 // Get single entry
-router.get('/entries/:id', async (req, res) => {
+api.get('/entries/:id', async (c: Context) => {
     try {
-        const { id } = req.params;
+        const id = c.req.param('id');
         const entry = await prisma.journalEntry.findUnique({
             where: { id },
         });
         if (!entry) {
-            return res.status(404).json({ error: 'Entry not found' });
+            return c.json({ error: 'Entry not found' }, 404);
         }
-        res.json(entry);
+        return c.json(entry);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch entry' });
+        return c.json({ error: 'Failed to fetch entry' }, 500);
     }
 });
 
 // Update entry
-router.put('/entries/:id', async (req, res) => {
+api.put('/entries/:id', async (c: Context) => {
     try {
-        const { id } = req.params;
-        const validatedData = updateEntrySchema.parse(req.body);
+        const id = c.req.param('id');
+        const body = await c.req.json();
+        const validatedData = updateEntrySchema.parse(body);
 
         const entry = await prisma.journalEntry.update({
             where: { id },
@@ -90,38 +91,41 @@ router.put('/entries/:id', async (req, res) => {
                 date: validatedData.date,
             },
         });
-        res.json(entry);
+        return c.json(entry);
     } catch (error) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ errors: error.issues });
-        } else if ((error as any).code === 'P2025') { // Prisma record not found
-            res.status(404).json({ error: 'Entry not found' });
-        } else {
-            res.status(500).json({ error: 'Failed to update entry' });
+            return c.json({ errors: error.issues }, 400);
         }
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+            return c.json({ error: 'Entry not found' }, 404);
+        }
+        return c.json({ error: 'Failed to update entry' }, 500);
     }
 });
 
 // Delete entry
-router.delete('/entries/:id', async (req, res) => {
+api.delete('/entries/:id', async (c: Context) => {
     try {
-        const { id } = req.params;
+        const id = c.req.param('id');
         await prisma.journalEntry.delete({
             where: { id },
         });
-        res.status(204).send();
+        return c.body(null, 204);
     } catch (error) {
-        if ((error as any).code === 'P2025') {
-            res.status(404).json({ error: 'Entry not found' });
-        } else {
-            res.status(500).json({ error: 'Failed to delete entry' });
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+            return c.json({ error: 'Entry not found' }, 404);
         }
+        return c.json({ error: 'Failed to delete entry' }, 500);
     }
 });
 
-app.use('/api', router);
+app.route('/api', api);
 
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const PORT = Number(process.env.PORT) || 3000;
+
+serve({
+    fetch: app.fetch,
+    port: PORT,
+}, (info: { port: number; address: string }) => {
+    console.log(`Server running on port ${info.port}`);
 });
