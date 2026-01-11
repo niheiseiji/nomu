@@ -130,12 +130,12 @@ export const EntryEditor = (props: Props) => {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <Button variant="ghost" onClick={handleBack} className="cursor-pointer">
+                <Button variant="ghost" onClick={handleBack}>
                     <ArrowLeft className="w-5 h-5 mr-1" />
                     戻る
                 </Button>
                 {isEdit && (
-                    <Button variant="danger" onClick={handleDelete} className="cursor-pointer">
+                    <Button variant="danger" onClick={handleDelete}>
                         <Trash2 className="w-4 h-4 mr-2" />
                         削除
                     </Button>
@@ -175,7 +175,7 @@ export const EntryEditor = (props: Props) => {
                         <Button
                             type="submit"
                             disabled={isSubmitting || (isEdit && !isDirty)}
-                            className="w-full sm:w-auto bg-black text-white cursor-pointer"
+                            className="w-full sm:w-auto"
                         >
                             {isSubmitting ? '保存中...' : (
                                 <>

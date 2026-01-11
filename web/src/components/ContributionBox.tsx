@@ -9,6 +9,20 @@ interface TooltipCellProps {
     hasEntry: boolean
 }
 
+const getSeasonImage = (dateStr: string): string => {
+    // formattedDate: "2026-01-04" -> 月を抽出
+    const month = parseInt(dateStr.split('-')[1], 10)
+    if (month >= 1 && month <= 3) {
+        return '/ume_red.png' // winter
+    } else if (month >= 4 && month <= 6) {
+        return '/sakura_pink.png' // spring
+    } else if (month >= 7 && month <= 9) {
+        return '/himawari_01.png' // summer
+    } else {
+        return '/cosmos_blue.png' // autumn
+    }
+}
+
 const TooltipCell = ({ formattedDate, hasEntry }: TooltipCellProps) => {
     const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number; showBelow: boolean } | null>(null)
     const [isHovered, setIsHovered] = useState(false)
@@ -69,11 +83,17 @@ const TooltipCell = ({ formattedDate, hasEntry }: TooltipCellProps) => {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
-                <div
-                    className={`w-[10px] h-[10px] rounded-sm border border-black ${
-                        hasEntry ? 'bg-black' : 'bg-white'
-                    }`}
-                />
+                <div className={`w-[10px] h-[10px] rounded-sm bg-white overflow-hidden ${
+                    hasEntry ? '' : 'border border-black'
+                }`}>
+                    {hasEntry && (
+                        <img
+                            src={getSeasonImage(formattedDate)}
+                            alt=""
+                            className="w-full h-full object-cover"
+                        />
+                    )}
+                </div>
             </div>
             {isHovered && tooltipPosition && (
                 <div
@@ -170,31 +190,22 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
         return result
     }, [contributionData])
 
-    // 月ラベルの位置を計算
+    // 月ラベルの位置を計算（各月の1日が存在する週の列を基準にする）
     const monthLabels = useMemo(() => {
         const labels: Array<{ weekIndex: number; month: string }> = []
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        let lastMonth = -1
         
-        weeks.forEach((week, weekIndex) => {
-            // 週の最初の有効な日を確認（月曜日から順に探す）
-            let firstDayInWeek: { date: string } | null = null
-            for (let i = 0; i < 7; i++) {
-                if (week[i] !== null) {
-                    firstDayInWeek = week[i]
-                    break
-                }
-            }
+        // 各月の1日がどの週の列にあるかを探す
+        for (let month = 0; month < 12; month++) {
+            const targetDate = `${new Date().getFullYear()}${String(month + 1).padStart(2, '0')}01`
             
-            if (firstDayInWeek) {
-                const month = parseInt(firstDayInWeek.date.slice(4, 6)) - 1 // 0-11
-                // 月が変わった場合、または最初の週の場合にラベルを追加
-                if (month !== lastMonth || weekIndex === 0) {
+            weeks.forEach((week, weekIndex) => {
+                const hasFirstDay = week.some(day => day !== null && day.date === targetDate)
+                if (hasFirstDay) {
                     labels.push({ weekIndex, month: monthNames[month] })
-                    lastMonth = month
                 }
-            }
-        })
+            })
+        }
         
         return labels
     }, [weeks])
@@ -202,29 +213,12 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
     const currentYear = new Date().getFullYear()
 
     return (
-        <div className="bg-ios-bg-light rounded-md max-w-[750px]">
+        <div className="bg-ios-bg-light rounded-md max-w-[750px] p-1">
             <h3 className="text-lg font-semibold mb-1">
                 {currentYear}年の記録
             </h3>
-            <div className="overflow-x-auto overflow-y-hidden max-w-[750px]">
-                <div className="relative">
-                    {/* 月ラベル */}
-                    <div className="flex gap-[3px]" style={{ paddingLeft: '24px' }}>
-                        {weeks.map((_, weekIndex) => {
-                            const monthLabel = monthLabels.find(label => label.weekIndex === weekIndex)
-                            return (
-                                <div key={weekIndex} className="flex flex-col" style={{ width: '13px' }}>
-                                    {monthLabel && (
-                                        <div className="text-xs text-gray-600 h-[10px] flex items-center">
-                                            {monthLabel.month}
-                                        </div>
-                                    )}
-                                    {!monthLabel && <div className="h-[10px]" />}
-                                </div>
-                            )
-                        })}
-                    </div>
-                    
+            <div className="overflow-x-auto max-w-[750px]" style={{ overflowY: 'visible' }}>
+                <div className="relative pt-[18px] pb-2">
                     {/* カレンダーグリッド */}
                     <div className="inline-flex gap-[3px] min-w-[600px] max-w-[600px]">
                         {/* 曜日ラベル列 */}
@@ -245,30 +239,40 @@ export const ContributionBox = ({ entries }: ContributionBoxProps) => {
                         </div>
                         
                         {/* 週の列 */}
-                        {weeks.map((week, weekIndex) => (
-                            <div key={weekIndex} className="flex flex-col gap-[3px]">
-                                {week.map((day, dayIndex) => {
-                                    if (day === null) {
+                        {weeks.map((week, weekIndex) => {
+                            const monthLabel = monthLabels.find(label => label.weekIndex === weekIndex)
+                            return (
+                                <div key={weekIndex} className="flex flex-col gap-[3px] relative">
+                                    {/* 月名ラベル行（絶対配置でブロックをはみ出す） */}
+                                    {monthLabel && (
+                                        <div className="absolute -top-[18px] left-0 text-xs text-gray-600 whitespace-nowrap pointer-events-none">
+                                            {monthLabel.month}
+                                        </div>
+                                    )}
+                                    {/* 日付セル */}
+                                    {week.map((day, dayIndex) => {
+                                        if (day === null) {
+                                            return (
+                                                <div
+                                                    key={`${weekIndex}-${dayIndex}`}
+                                                    className="w-[10px] h-[10px] rounded-sm border border-gray-300 bg-gray-200"
+                                                />
+                                            )
+                                        }
+                                        
+                                        const formattedDate = `${day.date.slice(0, 4)}-${day.date.slice(4, 6)}-${day.date.slice(6, 8)}`
+                                        
                                         return (
-                                            <div
+                                            <TooltipCell
                                                 key={`${weekIndex}-${dayIndex}`}
-                                                className="w-[10px] h-[10px] rounded-sm border border-gray-300 bg-gray-200"
+                                                formattedDate={formattedDate}
+                                                hasEntry={day.hasEntry}
                                             />
                                         )
-                                    }
-                                    
-                                    const formattedDate = `${day.date.slice(0, 4)}-${day.date.slice(4, 6)}-${day.date.slice(6, 8)}`
-                                    
-                                    return (
-                                        <TooltipCell
-                                            key={`${weekIndex}-${dayIndex}`}
-                                            formattedDate={formattedDate}
-                                            hasEntry={day.hasEntry}
-                                        />
-                                    )
-                                })}
-                            </div>
-                        ))}
+                                    })}
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </div>

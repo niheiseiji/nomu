@@ -38,6 +38,11 @@ export const UserIcon = () => {
         setIsMenuOpen(false)
     }
 
+    const handleSettings = () => {
+        // TODO: 設定処理を実装
+        setIsMenuOpen(false)
+    }
+
     return (
         <div className="relative">
             <button
@@ -65,6 +70,12 @@ export const UserIcon = () => {
                                 className="w-full text-left px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
                             >
                                 ヘルプ
+                            </button>
+                            <button
+                                onClick={handleSettings}
+                                className="w-full text-left px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                            >
+                                設定
                             </button>
                             <button
                                 onClick={handleLogout}
